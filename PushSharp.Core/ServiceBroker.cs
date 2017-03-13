@@ -12,8 +12,8 @@ namespace PushSharp.Core
     {
         static ServiceBroker ()
         {
-            ServicePointManager.DefaultConnectionLimit = 100;
-            ServicePointManager.Expect100Continue = false;
+            //ServicePointManager.DefaultConnectionLimit = 100;
+            //ServicePointManager.Expect100Continue = false;
         }
 
         public ServiceBroker (IServiceConnectionFactory<TNotification> connectionFactory)

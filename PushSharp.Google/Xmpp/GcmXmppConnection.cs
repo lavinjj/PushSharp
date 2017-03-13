@@ -50,10 +50,10 @@ namespace PushSharp.Google
 
             // Add local/machine certificate stores to our collection if requested
             //if (Configuration.AddLocalAndMachineCertificateStores) {
-                var store = new X509Store (StoreLocation.LocalMachine);
+                var store = new X509Store (StoreName.My, StoreLocation.LocalMachine);
                 certificates.AddRange (store.Certificates);
 
-                store = new X509Store (StoreLocation.CurrentUser);
+                store = new X509Store (StoreName.My, StoreLocation.CurrentUser);
                 certificates.AddRange (store.Certificates);
             //}
 
@@ -88,9 +88,7 @@ namespace PushSharp.Google
 
                 Log.Debug ("GCM-XMPP: Connecting...");
 
-                //await client.ConnectAsync (Configuration.Host, Configuration.Port).ConfigureAwait (false);
-         
-                client.Connect (Configuration.Host, Configuration.Port);
+                client.ConnectAsync (Configuration.Host, Configuration.Port).ConfigureAwait (false);
 
                 Log.Debug ("GCM-XMPP: Connected.  Creating Secure Channel...");
 
@@ -98,7 +96,7 @@ namespace PushSharp.Google
 
                 Log.Debug ("GCM-XMPP: Authenticating Tls...");
 
-                sslStream.AuthenticateAsClient (Configuration.Host, certificates, System.Security.Authentication.SslProtocols.Tls, false);
+                sslStream.AuthenticateAsClientAsync (Configuration.Host, certificates, System.Security.Authentication.SslProtocols.Tls, false);
                 stream = sslStream;
 
                 Log.Debug ("GCM-XMPP: Authenticated Tls.");

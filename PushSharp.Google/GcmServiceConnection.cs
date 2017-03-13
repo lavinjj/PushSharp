@@ -205,7 +205,7 @@ namespace PushSharp.Google
             foreach (var name in Enum.GetNames (enumType)) {
                 var enumMemberAttribute = ((EnumMemberAttribute[])enumType.GetField (name).GetCustomAttributes (typeof(EnumMemberAttribute), true)).Single ();
 
-                if (enumMemberAttribute.Value.Equals (str, StringComparison.InvariantCultureIgnoreCase))
+                if (enumMemberAttribute.Value.Equals (str, StringComparison.CurrentCultureIgnoreCase))
                     return (GcmResponseStatus)Enum.Parse (enumType, name);
             }
 
