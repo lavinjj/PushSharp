@@ -29,10 +29,10 @@ namespace PushSharp.Apple
 
             // Add local/machine certificate stores to our collection if requested
             if (Configuration.AddLocalAndMachineCertificateStores) {
-                var store = new X509Store (StoreLocation.LocalMachine);
+                var store = new X509Store (StoreName.My, StoreLocation.LocalMachine);
                 certificates.AddRange (store.Certificates);
 
-                store = new X509Store (StoreLocation.CurrentUser);
+                store = new X509Store (StoreName.My, StoreLocation.CurrentUser);
                 certificates.AddRange (store.Certificates);
             }
 
@@ -354,7 +354,7 @@ namespace PushSharp.Apple
                     (sender, targetHost, localCerts, remoteCert, acceptableIssuers) => certificate);
 
                 try {
-                    stream.AuthenticateAsClient (Configuration.Host, certificates, System.Security.Authentication.SslProtocols.Tls, false);
+                    await stream.AuthenticateAsClientAsync (Configuration.Host, certificates, System.Security.Authentication.SslProtocols.Tls, false);
                 } catch (System.Security.Authentication.AuthenticationException ex) {
                     throw new ApnsConnectionException ("SSL Stream Failed to Authenticate as Client", ex);
                 }
@@ -378,16 +378,16 @@ namespace PushSharp.Apple
             //We now expect apple to close the connection on us anyway, so let's try and close things
             // up here as well to get a head start
             //Hopefully this way we have less messages written to the stream that we have to requeue
-            try { stream.Close (); } catch { }
+            // try { stream.Close (); } catch { }
             try { stream.Dispose (); } catch { }
 
-            try { networkStream.Close (); } catch { }
+            // try { networkStream.Close (); } catch { }
             try { networkStream.Dispose (); } catch { }
 
             try { client.Client.Shutdown (SocketShutdown.Both); } catch { }
             try { client.Client.Dispose (); } catch { }
 
-            try { client.Close (); } catch { }
+            // try { client.Close (); } catch { }
 
             client = null;
             networkStream = null;

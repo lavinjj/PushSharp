@@ -28,10 +28,10 @@ namespace PushSharp.Apple
 
             // Add local/machine certificate stores to our collection if requested
             if (Configuration.AddLocalAndMachineCertificateStores) {
-                var store = new X509Store (StoreLocation.LocalMachine);
+                var store = new X509Store (StoreName.My, StoreLocation.LocalMachine);
                 certificates.AddRange (store.Certificates);
 
-                store = new X509Store (StoreLocation.CurrentUser);
+                store = new X509Store (StoreName.My, StoreLocation.CurrentUser);
                 certificates.AddRange (store.Certificates);
             }
 
@@ -73,7 +73,7 @@ namespace PushSharp.Apple
 
             var data = Encoding.ASCII.GetBytes (payload);
 
-            var headers = new NameValueCollection ();
+            var headers = new NameValueCollection();
             headers.Add ("apns-id", notification.Uuid); // UUID
 
             if (notification.Expiration.HasValue) {
@@ -115,7 +115,7 @@ namespace PushSharp.Apple
                     }
 
                     // Expired
-                    throw new PushSharp.Core.DeviceSubscriptonExpiredException {
+                    throw new PushSharp.Core.DeviceSubscriptonExpiredException(notification) {
                         OldSubscriptionId = notification.DeviceToken,
                         NewSubscriptionId = null,
                         ExpiredAt = timestamp
